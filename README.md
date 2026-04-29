@@ -57,7 +57,7 @@ grep '"version"' node_modules/postcss-url/node_modules/mime/package.json | sed '
 ```
 Result: Returns "postcss-url" version `2.5.2` (matches bun.lock)
 
-### 3. `--filter a-widget` (BUG)
+### 3. `--filter a-widget` (BUG) 🚨
 
 ```bash
 rm -rf node_modules
