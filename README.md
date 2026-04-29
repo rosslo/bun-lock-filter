@@ -64,7 +64,12 @@ rm -rf node_modules
 bun install --frozen-lockfile --filter a-widget
 grep '"version"' node_modules/mime/package.json | sed 's/.*"version": "\(.*\)".*/\1/'
 ```
-Result: Returns "mime" version `2.5.2` (different from bun.lock)
+Result: Returns "mime" version `2.5.2` (different from bun.lock) ❌
+
+```bash
+grep '"version"' node_modules/postcss-url/node_modules/mime/package.json | sed 's/.*"version": "\(.*\)".*/\1/'
+```
+Result: No such file
 
 ## Expected Behavior
 
