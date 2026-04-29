@@ -1,0 +1,8 @@
+{
+  "name": "a-widget",
+  "sideEffects": false,
+  "version": "0.0.1",
+  "dependencies": {
+    "postcss-url": "10.1.3"
+  }
+}
