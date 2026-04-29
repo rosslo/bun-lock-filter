@@ -34,62 +34,37 @@ Two different versions of `mime` exist:
 ```bash
 rm -rf node_modules
 bun install --frozen-lockfile
+grep '"version"' node_modules/mime/package.json | sed 's/.*"version": "\(.*\)".*/\1/'
 ```
+Result: Returns "mime" version `1.6.0` (matches bun.lock)
 
-| package | version | location |
-|---------|---------|----------|
-| mime | 1.6.0 | root (hoisted, for send) |
-| mime | 2.5.2 | nested under postcss-url |
-
-Exit code: **0**. Matches `bun.lock`.
+```bash
+grep '"version"' node_modules/postcss-url/node_modules/mime/package.json | sed 's/.*"version": "\(.*\)".*/\1/'
+```
+Result: Returns "postcss-url" version `2.5.2` (matches bun.lock)
 
 ### 2. `--filter a-ui` (correct)
 
 ```bash
 rm -rf node_modules
 bun install --frozen-lockfile --filter a-ui
+grep '"version"' node_modules/mime/package.json | sed 's/.*"version": "\(.*\)".*/\1/'
 ```
+Result: Returns "mime" version `1.6.0` (matches bun.lock)
 
-| package | version | location |
-|---------|---------|----------|
-| mime | 1.6.0 | root (hoisted, for send) |
-| mime | 2.5.2 | nested under postcss-url |
-
-Exit code: **0**. Matches `bun.lock`. (a-ui depends on a-widget, so both trees are installed)
+```bash
+grep '"version"' node_modules/postcss-url/node_modules/mime/package.json | sed 's/.*"version": "\(.*\)".*/\1/'
+```
+Result: Returns "postcss-url" version `2.5.2` (matches bun.lock)
 
 ### 3. `--filter a-widget` (BUG)
 
 ```bash
 rm -rf node_modules
 bun install --frozen-lockfile --filter a-widget
+grep '"version"' node_modules/mime/package.json | sed 's/.*"version": "\(.*\)".*/\1/'
 ```
-
-| package | version | location |
-|---------|---------|----------|
-| mime | **2.5.2** | root |
-| mime@1.6.0 | **missing** | — |
-
-Exit code: **0** (should have failed or installed correctly).
-
-`--filter a-widget` only sees `postcss-url` → `mime@2.5.2`, so it hoists `2.5.2` to root. It doesn't know that the full lockfile reserves root `mime` for `1.6.0`.
-
-### 4. `--filter a-widget` without `--frozen-lockfile`
-
-```bash
-rm -rf node_modules
-bun install --filter a-widget
-```
-
-Same result as test 3. `bun.lock` is **not modified** (still contains both `mime@1.6.0` and `postcss-url/mime@2.5.2`), but the installed tree doesn't match.
-
-## Bug Summary
-
-`--filter` re-computes the hoisting layout using only the filtered workspace's dependency tree, ignoring the global hoisting structure recorded in `bun.lock`.
-
-This means:
-- Root `node_modules` gets a **different version** than what `bun.lock` specifies
-- `--frozen-lockfile` does **not** catch this inconsistency (exit 0)
-- Switching between `--filter a-ui` and `--filter a-widget` produces **different root `node_modules`** layouts
+Result: Returns "mime" version `2.5.2` (different from bun.lock)
 
 ## Expected Behavior
 
