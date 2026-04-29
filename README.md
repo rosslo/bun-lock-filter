@@ -118,7 +118,3 @@ bun install --frozen-lockfile --filter a-widget
 
 - bun 1.2.15 — **bug exists**
 - bun 1.3.11 — **bug exists**
-
-## Related
-
-- https://github.com/oven-sh/bun/issues/20509
